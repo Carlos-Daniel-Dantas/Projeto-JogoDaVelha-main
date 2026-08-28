@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./Game.module.css"
 import Board from '../Board/Board.jsx'
 
@@ -8,6 +8,16 @@ export default function Game() {
   const [currentMove, setCurrentMove] = useState(0);
   const xIsNext = currentMove % 2 === 0;
   const currentSquares = history[currentMove];
+  const [tema, setTema] = useState("claro")
+
+  const alternarTema = () => {
+    setTema((temaAtual) => (temaAtual === 'claro' ? 'escuro' : 'claro'));
+  };
+
+  useEffect(() => {
+    document.body.className = tema;
+  }, [tema]);
+
 
   const [placar, setPlacar] = useState({ vitoriasX: 0, vitoriasO: 0, empates: 0 });
 
@@ -26,7 +36,7 @@ export default function Game() {
     } else if (vencedor === 'O') {
       setPlacar((placarAtual) => ({
         ...placarAtual,
-        vitoriasO: placarAtual.vitoriaS + 1,
+        vitoriasO: placarAtual.vitoriasO + 1,
       }));
     } else if (!nextSquares.includes(null)) {
       setPlacar((placarAtual) => ({
@@ -74,6 +84,12 @@ export default function Game() {
 
   return (
     <div className="game">
+      <button className={styles.tema} onClick={alternarTema}>
+
+        {tema === 'claro' ? '🌙' : '🌞'}
+
+      </button>
+
       <div>
         <div>
           <span>X : </span>
