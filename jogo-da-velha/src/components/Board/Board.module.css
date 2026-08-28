@@ -16,3 +16,7 @@
   display: flex;
 }
 
+.vencedor {
+    color: #c50505; 
+    font-weight: bold;
+}
