@@ -2,7 +2,6 @@ import { useState } from "react";
 import styles from "./Game.module.css"
 import Board from '../Board/Board.jsx'
 
-const [scores, setScores] = useState({ x: 0, o: 0 });
 
 export default function Game() {
   const [history, setHistory] = useState([Array(9).fill(null)]);
@@ -10,14 +9,53 @@ export default function Game() {
   const xIsNext = currentMove % 2 === 0;
   const currentSquares = history[currentMove];
 
+  const [placar, setPlacar] = useState({ vitoriasX: 0, vitoriasO: 0, empates: 0 });
+
   function handlePlay(nextSquares) {
     const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
     setHistory(nextHistory);
     setCurrentMove(nextHistory.length - 1);
+
+    const vencedor = calcularVencedor(nextSquares);
+
+    if (vencedor === 'X') {
+      setPlacar((placarAtual) => ({
+        ...placarAtual,
+        vitoriasX: placarAtual.vitoriasX + 1,
+      }));
+    } else if (vencedor === 'O') {
+      setPlacar((placarAtual) => ({
+        ...placarAtual,
+        vitoriasO: placarAtual.vitoriaS + 1,
+      }));
+    } else if (!nextSquares.includes(null)) {
+      setPlacar((placarAtual) => ({
+        ...placarAtual,
+        empates: placarAtual.empates + 1,
+      }));
+    }
   }
 
   function jumpTo(nextMove) {
     setCurrentMove(nextMove);
+  }
+
+
+  // vai ler cada fileira e ver cada opção de vitoria do jogo 
+  function calcularVencedor(quadrados) {
+    const combinacoes = [
+      [0, 1, 2], [3, 4, 5], [6, 7, 8],
+      [0, 3, 6], [1, 4, 7], [2, 5, 8],
+      [0, 4, 8], [2, 4, 6]
+    ];
+
+    for (let i = 0; i < combinacoes.length; i++) {
+      const [a, b, c] = combinacoes[i];
+      if (quadrados[a] && quadrados[a] === quadrados[b] && quadrados[a] === quadrados[c]) {
+        return quadrados[a];
+      }
+    }
+    return null;
   }
 
   const moves = history.map((squares, move) => {
@@ -36,6 +74,21 @@ export default function Game() {
 
   return (
     <div className="game">
+      <div>
+        <div>
+          <span>X : </span>
+          <strong>{placar.vitoriasX}</strong>
+        </div>
+        <div>
+          <span>Empates</span>
+          <strong>{placar.empates}</strong>
+        </div>
+        <div>
+          <span>O : </span>
+          <strong>{placar.vitoriasO}</strong>
+        </div>
+      </div>
+
       <div className="game-board">
         <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
       </div>
