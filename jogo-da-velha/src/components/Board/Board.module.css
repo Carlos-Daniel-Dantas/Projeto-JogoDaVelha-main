@@ -20,7 +20,29 @@
   background-color: var(--board-bg);
   padding: 10px;
   border-radius: 12px;
-  width: 270px;
-  height: 270px;
+  width: 300px;
+  height: 300px;
 
+}
+
+.quadro {
+    display: flex;
+    align-items: center;     /* Centraliza o X/O na vertical */
+    justify-content: center;  /* Centraliza o X/O na horizontal */
+    
+    font-size: 1.0rem;        /* Tamanho do X e do O */
+    font-weight: bold;
+    cursor: pointer;
+    
+    /* Garante que o texto fique centralizado caso a fonte alinhe diferente */
+    line-height: 1;
+    padding: 0;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 60px); /* Mesma largura dos quadrados */
+    grid-template-rows: repeat(3, 60px);    /* Mesma altura dos quadrados */
+    gap: 8px;                                /* Espaço entre cada quadrado */
+    justify-content: center;
 }

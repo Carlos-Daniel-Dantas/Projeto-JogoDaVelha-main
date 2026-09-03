@@ -3,13 +3,11 @@ import styles from "./Game.module.css";
 import Board from '../Board/Board.jsx';
 import Swal from "sweetalert2";
 
-
 // 1. Função para reproduzir o som
 const tocarSom = (caminhoDoSom) => {
   const audio = new Audio(caminhoDoSom);
   audio.play().catch((err) => console.log("Erro ao reproduzir áudio:", err));
 };
-
 
 export default function Game() {
   const [history, setHistory] = useState([Array(9).fill(null)]);
@@ -17,6 +15,9 @@ export default function Game() {
   const xIsNext = currentMove % 2 === 0;
   const currentSquares = history[currentMove];
   const [tema, setTema] = useState("claro");
+
+  // --- NOVO: Estado para o Timer (180 segundos = 3 minutos) ---
+  const [tempoRestante, setTempoRestante] = useState(180);
 
   const alternarTema = () => {
     setTema((temaAtual) => (temaAtual === 'claro' ? 'escuro' : 'claro'));
@@ -29,6 +30,47 @@ export default function Game() {
   const [placar, setPlacar] = useState({ vitoriasX: 0, vitoriasO: 0, empates: 0 });
   const resultadoVitoria = calcularVencedor(currentSquares);
   const vencedor = resultadoVitoria ? resultadoVitoria.vencedor : null;
+
+  // --- NOVO: useEffect para o Timer da partida ---
+  useEffect(() => {
+    // Se o tempo chegou a 0, para a contagem e decide o vencedor geral
+    if (tempoRestante <= 0) {
+      let mensagem = "";
+
+      if (placar.vitoriasX > placar.vitoriasO) {
+        mensagem = `O Jogador X venceu o torneio com ${placar.vitoriasX} vitória(s)!`;
+      } else if (placar.vitoriasO > placar.vitoriasX) {
+        mensagem = `O Jogador O venceu o torneio com ${placar.vitoriasO} vitória(s)!`;
+      } else {
+        mensagem = `O tempo acabou e houve um empate no placar geral! (${placar.vitoriasX} x ${placar.vitoriasO})`;
+      }
+
+      Swal.fire({
+        title: '⏰ Fim de jogo!',
+        text: mensagem,
+        icon: 'info',
+        confirmButtonText: 'Reiniciar Torneio',
+        confirmButtonColor: '#3085d6',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Reseta o tempo e o placar
+          setTempoRestante(180);
+          setPlacar({ vitoriasX: 0, vitoriasO: 0, empates: 0 });
+          jumpTo(0);
+        }
+      });
+
+      return;
+    }
+
+    // Intervalo de 1 segundo para diminuir o timer
+    const timerInterval = setInterval(() => {
+      setTempoRestante((tempoAtual) => tempoAtual - 1);
+    }, 1000);
+
+    // Limpa o intervalo quando o componente desmonta ou atualiza
+    return () => clearInterval(timerInterval);
+  }, [tempoRestante, placar.vitoriasX, placar.vitoriasO]);
 
   useEffect(() => {
     const deuEmpate = !vencedor && !currentSquares.includes(null);
@@ -65,7 +107,6 @@ export default function Game() {
   }, [currentSquares, vencedor]);
 
   function handlePlay(nextSquares) {
-    // 2. Toca o som de acordo com o jogador atual antes de salvar a jogada
     if (xIsNext) {
       tocarSom("/som-x.mp3");
     } else {
@@ -122,6 +163,13 @@ export default function Game() {
     return null;
   }
 
+  // --- NOVO: Função para formatar os segundos em 00:00 ---
+  const formatarTempo = (segundos) => {
+    const min = Math.floor(segundos / 60);
+    const seg = segundos % 60;
+    return `${String(min).padStart(2, '0')}:${String(seg).padStart(2, '0')}`;
+  };
+
   const moves = history.map((squares, move) => {
     let description = move > 0 ? 'JOGADA ' + move : 'RESETAR';
     return (
@@ -129,14 +177,12 @@ export default function Game() {
         <button className={styles.reset} onClick={() => jumpTo(move)}>{description}</button>
       </li>
     );
-    
   });
 
   return (
     <div className={styles.container}>
       <header className={styles.header}>
-        <img src="favicon.ico" alt="Logo" className={styles.logo}/>
-
+        <img src="favicon.ico" alt="Logo" className={styles.logo} />
         <h1 className={styles.titulo}>Jogo da Velha</h1>
       </header>
 
@@ -159,12 +205,15 @@ export default function Game() {
         </div>
       </div>
 
-
+      {/* --- ATUALIZADO: Exibindo o estado formatado direto no JSX --- */}
+      <div id="cronometro-container">
+        Tempo restante: <span>{formatarTempo(tempoRestante)}</span>
+      </div>
 
       <div className="game-board">
-        <Board 
-          xIsNext={xIsNext} 
-          squares={currentSquares} 
+        <Board
+          xIsNext={xIsNext}
+          squares={currentSquares}
           onPlay={handlePlay}
           winningLine={resultadoVitoria ? resultadoVitoria.linhaIndex : null}
           winningSquares={resultadoVitoria ? resultadoVitoria.indices : []}

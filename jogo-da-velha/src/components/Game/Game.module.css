@@ -11,19 +11,22 @@
     box-shadow: var(--shadow);
     position: relative;
     transition: background-color 0.3s ease;
+    box-sizing: border-box;
 }
 
 .tema {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
+    position: fixed; /* Fixa o botão em relação à tela do navegador */
+    top: 1.5rem;     /* Distância do topo */
+    right: 1.5rem;   /* Distância da direita */
     background: transparent;
     border: none;
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     cursor: pointer;
     padding: 0.5rem;
     border-radius: 50%;
     transition: transform 0.2s ease;
+    z-index: 1000;   /* Garante que fique por cima de outros elementos */
+    box-sizing: border-box;
 }
 
 :global(body.claro) {
@@ -102,12 +105,12 @@
 }
 
 .header {
-    position: absolute;
-    top: 1rem;
-    left: 1rem;
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    justify-content: center; /* Centraliza a logo e o título horizontalmente */
+    gap: 0.95rem;
+    width: 100%;
+    margin-bottom: 0.5rem;
 }
 
 .logo {
@@ -117,9 +120,11 @@
 }
 
 .titulo {
-    font-size: 1.25rem;
+    font-size: 1.5rem;
     font-weight: bold;
     margin: 0;
     color: var(--text-primary);
     font-family: inherit;
+    text-align: center;
 }
+
