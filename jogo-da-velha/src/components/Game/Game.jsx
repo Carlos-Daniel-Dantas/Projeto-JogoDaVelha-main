@@ -82,35 +82,42 @@ export default function Game() {
     );
   });
 
-  return (
-    <div className="game">
-      <button className={styles.tema} onClick={alternarTema}>
+return (
 
-        {tema === 'claro' ? '🌙' : '🌞'}
 
-      </button>
+<div className={styles.container}>
 
-      <div>
-        <div>
-          <span>X : </span>
-          <strong>{placar.vitoriasX}</strong>
-        </div>
-        <div>
-          <span>Empates</span>
-          <strong>{placar.empates}</strong>
-        </div>
-        <div>
-          <span>O : </span>
-          <strong>{placar.vitoriasO}</strong>
-        </div>
+    <header className={styles.header}>
+      <img src="favicon.ico" alt="Logo" className={styles.logo} />
+      <h1 className={styles.titulo}>Jogo da Velha</h1>
+    </header>
+
+    <button className={styles.tema} onClick={alternarTema}>
+      {tema === 'claro' ? '🌙' : '🌞'}
+    </button>
+
+    <div className={styles.placar}>
+      <div className={styles.itemPlacar}>
+        <span>X</span>
+        <strong>{placar.vitoriasX}</strong>
       </div>
-
-      <div className="game-board">
-        <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
+      <div className={styles.itemPlacar}>
+        <span>Empates</span>
+        <strong>{placar.empates}</strong>
       </div>
-      <div className="game-info">
-        <ol>{moves}</ol>
+      <div className={styles.itemPlacar}>
+        <span>O</span>
+        <strong>{placar.vitoriasO}</strong>
       </div>
     </div>
-  );
+
+    <div className="game-board">
+      <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
+    </div>
+
+    <div className={styles.historico}>
+      <ol>{moves}</ol>
+    </div>
+  </div>
+);
 }

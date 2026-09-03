@@ -1,0 +1,40 @@
+/* Variáveis para Tema Claro (Padrão) */
+body.claro {
+  --bg-color: #f4f6f9;
+  --card-bg: #ffffff;
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+  --board-bg: #e5e7eb;
+  --cell-bg: #ffffff;
+  --cell-hover: #f3f4f6;
+  --accent-x: #ef4444;
+  --accent-o: #3b82f6;
+  --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+}
+
+/* Variáveis para Tema Escuro */
+body.escuro {
+  --bg-color: #0f172a;
+  --card-bg: #1e293b;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --board-bg: #334155;
+  --cell-bg: #1e293b;
+  --cell-hover: #334155;
+  --accent-x: #f87171;
+  --accent-o: #60a5fa;
+  --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
