@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "sweetalert2": "^11.26.25",
+    "sweetalert2-react-content": "^5.1.2"
+  }
+}
