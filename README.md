@@ -1,44 +1,51 @@
-# ❌⭕ Jogo da Velha 
+# ❌⭕ Jogo da Velha (Tic-Tac-Toe)
 
-Uma versão moderna, interativa e responsiva do clássico Jogo da Velha desenvolvida com React e Vite.
+Uma aplicação moderna, intuitiva e totalmente responsiva do clássico Jogo da Velha, desenvolvida com React e Vite.
 
----
-
-## 🎯 Objetivo do Projeto
-
-O principal objetivo deste projeto é oferecer um Jogo da Velha interativo, permitindo que os jogadores se divirtam enquanto testam suas estratégias. 
-
-Este repositório foi desenvolvido como parte do meu aprendizado e portfólio, focando no estudo de gerenciamento de estado no React, componentização, boas práticas de código e alta performance no frontend.
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
 
 ---
 
-## 🛠️ Tecnologias e Linguagens Utilizadas
+## 🎯 Sobre o Projeto
 
-O projeto foi construído utilizando as seguintes linguagens e ferramentas:
+O objetivo deste projeto é proporcionar uma experiência fluida e agradável do tradicional Jogo da Velha direto no navegador. 
 
-*   **HTML5:** Estruturação semântica da aplicação.
-*   **CSS3:** Estilização, layout e responsividade da interface.
-*   **JavaScript (ES6+):** Lógica do jogo, controle de turnos e validação de vitória/empate.
-*   **[React](https://react.dev/):** Biblioteca principal para a construção da interface baseada em componentes e controle de estado (`useState`).
-*   **[Vite](https://vitejs.dev/):** Ferramenta de build de alta performance para um desenvolvimento rápido.
+Desenvolvido para fins de estudo e composição de portfólio, o foco principal foi aplicar conceitos cruciais do desenvolvimento frontend moderno:
+- **Gerenciamento de Estado:** Manipulação e controle de fluxo do jogo com hooks do React (`useState`).
+- **Componentização:** Arquitetura modular e reutilizável.
+- **Lógica e Regras de Negócio:** Algoritmo dinâmico para validação de vitórias e empates.
+- **Performance e Dev Experience:** Uso do Vite como build tool para inicialização instantânea.
 
 ---
 
-## 💻 Como Baixar e Executar o Projeto Localmente
+## 🛠️ Tecnologias Utilizadas
 
-Siga o passo a passo abaixo para rodar a aplicação no seu computador:
+- **[React](https://react.dev/):** Biblioteca principal para construção da interface declarativa e reativa.
+- **[Vite](https://vitejs.dev/):** Ferramenta de build de alta performance e servidor de desenvolvimento super rápido.
+- **JavaScript (ES6+):** Implementação da lógica de turnos e condições de término de partida.
+- **CSS3:** Estilização customizada, animações e layout responsivo.
+- **HTML5:** Estruturação semântica.
+
+---
+
+## 💻 Como Executar o Projeto Localmente
+
+Siga as instruções abaixo para rodar a aplicação na sua máquina:
 
 ### 📋 Pré-requisitos
 
-Antes de começar, você precisará ter o **[Node.js](https://nodejs.org/)** (versão 18 ou superior) e o **[Git](https://git-scm.com/)** instalados na sua máquina.
+Certifique-se de ter instalado em seu computador:
+* [Node.js](https://nodejs.org/) (versão 18 ou superior)
+* [Git](https://git-scm.com/)
+* Um gerenciador de pacotes (`npm`, `yarn` ou `pnpm`)
 
 ---
 
 ### 🚀 Passo a Passo
 
-#### Passo 1: Clonar o repositório
-Abra o terminal e baixe o código-fonte executando:
-
 1. **Clonar o repositório:**
    ```bash
-   git clone https://github.com/Carlos-Daniel-Dantas/ProjetoJogoDaVelha.git
+   git clone [https://github.com/Carlos-Daniel-Dantas/Projeto-JogoDaVelha-main.git](https://github.com/Carlos-Daniel-Dantas/Projeto-JogoDaVelha-main.git)
