@@ -16,8 +16,9 @@ export default function Game() {
   const currentSquares = history[currentMove];
   const [tema, setTema] = useState("claro");
 
-  // --- NOVO: Estado para o Timer (180 segundos = 3 minutos) ---
-  const [tempoRestante, setTempoRestante] = useState(180);
+  // --- TIMERS ---
+  const [tempoGeral, setTempoGeral] = useState(180); // 3 minutos de partida
+  const [tempoTurno, setTempoTurno] = useState(10);  // 10 segundos por jogada
 
   const alternarTema = () => {
     setTema((temaAtual) => (temaAtual === 'claro' ? 'escuro' : 'claro'));
@@ -31,30 +32,35 @@ export default function Game() {
   const resultadoVitoria = calcularVencedor(currentSquares);
   const vencedor = resultadoVitoria ? resultadoVitoria.vencedor : null;
 
-  // --- NOVO: useEffect para o Timer da partida ---
+  // --- 1. TIMER GERAL DA PARTIDA (3 MINUTOS) ---
   useEffect(() => {
-    // Se o tempo chegou a 0, para a contagem e decide o vencedor geral
-    if (tempoRestante <= 0) {
-      let mensagem = "";
+    if (tempoGeral <= 0) {
+      let titulo = '⏰ Tempo Esgotado!';
+      let mensagem = '';
+      let icone = 'info';
 
       if (placar.vitoriasX > placar.vitoriasO) {
+        titulo = '🏆 Vencedor do Torneio: Jogador X!';
         mensagem = `O Jogador X venceu o torneio com ${placar.vitoriasX} vitória(s)!`;
+        icone = 'success';
       } else if (placar.vitoriasO > placar.vitoriasX) {
+        titulo = '🏆 Vencedor do Torneio: Jogador O!';
         mensagem = `O Jogador O venceu o torneio com ${placar.vitoriasO} vitória(s)!`;
+        icone = 'success';
       } else {
-        mensagem = `O tempo acabou e houve um empate no placar geral! (${placar.vitoriasX} x ${placar.vitoriasO})`;
+        mensagem = `O tempo acabou e houve um empate geral! (${placar.vitoriasX} x ${placar.vitoriasO})`;
       }
 
       Swal.fire({
-        title: '⏰ Fim de jogo!',
+        title: titulo,
         text: mensagem,
-        icon: 'info',
+        icon: icone,
         confirmButtonText: 'Reiniciar Torneio',
         confirmButtonColor: '#3085d6',
       }).then((result) => {
         if (result.isConfirmed) {
-          // Reseta o tempo e o placar
-          setTempoRestante(180);
+          setTempoGeral(180);
+          setTempoTurno(10);
           setPlacar({ vitoriasX: 0, vitoriasO: 0, empates: 0 });
           jumpTo(0);
         }
@@ -63,15 +69,45 @@ export default function Game() {
       return;
     }
 
-    // Intervalo de 1 segundo para diminuir o timer
-    const timerInterval = setInterval(() => {
-      setTempoRestante((tempoAtual) => tempoAtual - 1);
+    const timerGeralInterval = setInterval(() => {
+      setTempoGeral((prev) => prev - 1);
     }, 1000);
 
-    // Limpa o intervalo quando o componente desmonta ou atualiza
-    return () => clearInterval(timerInterval);
-  }, [tempoRestante, placar.vitoriasX, placar.vitoriasO]);
+    return () => clearInterval(timerGeralInterval);
+  }, [tempoGeral, placar]);
 
+  // --- 2. TIMER POR TURNO (10 SEGUNDOS POR JOGADA) ---
+  useEffect(() => {
+    // Se a rodada acabou ou a partida terminou, não conta o tempo da jogada
+    if (vencedor || tempoGeral <= 0) return;
+
+    if (tempoTurno <= 0) {
+      const jogadorPerdeu = xIsNext ? "X" : "O";
+      const proximoJogador = xIsNext ? "O" : "X";
+
+      Swal.fire({
+        title: '⌛ Tempo do turno esgotado!',
+        text: `O Jogador ${jogadorPerdeu} demorou muito! A vez passou para o Jogador ${proximoJogador}.`,
+        icon: 'warning',
+        timer: 2000,
+        showConfirmButton: false
+      });
+
+      // Passa a vez sem alterar o tabuleiro (adiciona uma jogada neutra/passagem de turno)
+      setHistory((prevHistory) => [...prevHistory, currentSquares]);
+      setCurrentMove((prevMove) => prevMove + 1);
+      setTempoTurno(10); // Reseta o tempo da jogada
+      return;
+    }
+
+    const timerTurnoInterval = setInterval(() => {
+      setTempoTurno((prev) => prev - 1);
+    }, 1000);
+
+    return () => clearInterval(timerTurnoInterval);
+  }, [tempoTurno, currentMove, vencedor, tempoGeral, xIsNext, currentSquares]);
+
+  // --- ALERTAS DE FIM DE PARTIDA INDIVIDUAL ---
   useEffect(() => {
     const deuEmpate = !vencedor && !currentSquares.includes(null);
 
@@ -79,9 +115,9 @@ export default function Game() {
       const timer = setTimeout(() => {
         Swal.fire({
           title: '🎉 Temos um vencedor!',
-          text: `O Jogador ${vencedor === 'X' ? '1 (X)' : '2 (O)'} venceu a partida!`,
+          text: `O Jogador ${vencedor === 'X' ? '1 (X)' : '2 (O)'} venceu a rodada!`,
           icon: 'success',
-          confirmButtonText: 'Jogar Novamente',
+          confirmButtonText: 'Próxima Rodada',
           confirmButtonColor: '#3085d6',
         }).then((result) => {
           if (result.isConfirmed) {
@@ -94,9 +130,9 @@ export default function Game() {
     } else if (deuEmpate) {
       Swal.fire({
         title: '🤝 Empate!',
-        text: 'Ninguém venceu esta partida.',
+        text: 'Ninguém venceu esta rodada.',
         icon: 'info',
-        confirmButtonText: 'Tentar Novamente',
+        confirmButtonText: 'Próxima Rodada',
         confirmButtonColor: '#3085d6',
       }).then((result) => {
         if (result.isConfirmed) {
@@ -117,6 +153,7 @@ export default function Game() {
     setHistory(nextHistory);
 
     setCurrentMove(nextHistory.length - 1);
+    setTempoTurno(10); // Reseta o timer de 10s quando o jogador faz uma jogada
 
     const resultado = calcularVencedor(nextSquares);
     const novoVencedor = resultado ? resultado.vencedor : null;
@@ -141,6 +178,7 @@ export default function Game() {
 
   function jumpTo(nextMove) {
     setCurrentMove(nextMove);
+    setTempoTurno(10); // Reseta o tempo da jogada ao resetar/voltar
   }
 
   function calcularVencedor(quadrados) {
@@ -163,7 +201,7 @@ export default function Game() {
     return null;
   }
 
-  // --- NOVO: Função para formatar os segundos em 00:00 ---
+  // Função para formatar os segundos em 00:00
   const formatarTempo = (segundos) => {
     const min = Math.floor(segundos / 60);
     const seg = segundos % 60;
@@ -205,9 +243,12 @@ export default function Game() {
         </div>
       </div>
 
-      {/* --- ATUALIZADO: Exibindo o estado formatado direto no JSX --- */}
-      <div id="cronometro-container">
-        Tempo restante: <span>{formatarTempo(tempoRestante)}</span>
+      {/* --- PAINEIS DE TEMPO --- */}
+      <div id="cronometro-container" style={{ textAlign: "center", marginBottom: "15px" }}>
+        <div>Tempo do Torneio: <strong>{formatarTempo(tempoGeral)}</strong></div>
+        <div style={{ color: tempoTurno <= 3 ? "red" : "inherit", fontWeight: "bold" }}>
+          Sua vez ({xIsNext ? "X" : "O"}): {tempoTurno}s
+        </div>
       </div>
 
       <div className="game-board">
